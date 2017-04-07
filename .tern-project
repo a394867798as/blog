@@ -1,0 +1,22 @@
+{
+  "plugins": {
+    "guess-types": {
+      
+    },
+    "browser-extension": {
+      
+    },
+    "bootstrap": {
+      
+    },
+    "jquery-extension": {
+      
+    }
+  },
+  "libs": [
+    "ecma5",
+    "browser",
+    "jquery"
+  ],
+  "ecmaVersion": 6
+}
