@@ -9,6 +9,7 @@ class Article extends Model
     //表名
     protected $table = "article";
     protected $primaryKey = "aid";
+    public $timestamps = false;
     /**
      * The attributes that are mass assignable.
      *
@@ -33,6 +34,7 @@ class Article extends Model
 	        'is_reported',
 			'verify_uid',
 			'verify_time',
+            'verify_reason',
 			'modify_uid',
 			'modify_time',
 			'is_del',

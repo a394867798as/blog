@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Article;
 use App\ArticleProfile;
-
+use \Illuminate\Support\Facades\Request;
 class ArticleController extends Controller
 {
     /**
@@ -42,5 +42,29 @@ class ArticleController extends Controller
      */
     public function create(){
         return view('articles.create');
+    }
+    /**
+     * 执行添加文章
+     * @author zhaoguanglai
+     * Date: 2017年4月7日
+     */
+    public function store(){
+        //初始化变量
+        $nowTime = time();
+        $article = new Article();
+        $article->atitle = trim(Request::get('title'));
+        $article->type = 1;
+        $article->status = 2;
+        $article->create_uid = $article->modify_uid =  14827;
+        $article->update_time = $article->modify_time = $article->create_time = $nowTime;
+        //执行添加文章
+        $article->save();
+        if($article->aid){
+            $articleProData['aid'] = $article->aid;
+            $articleProData['acontent'] = Request::get('content');
+            $articleProData['create_ip'] = bindec(decbin(ip2long(Request::getClientIp())));
+            ArticleProfile::insert($articleProData);
+        }
+        return redirect('/article');
     }
 }

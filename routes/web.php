@@ -29,3 +29,4 @@ Route::get('/home', 'HomeController@index');
 Route::get('/article', 'ArticleController@index');
 Route::get('/article/show/{id}', 'ArticleController@show');
 Route::get('/article/create', 'ArticleController@create');
+Route::post('/article/store', 'ArticleController@store');

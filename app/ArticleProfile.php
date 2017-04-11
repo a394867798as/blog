@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class ArticleProfile extends Model
 {
     protected $table = "article_profile";
+    public $timestamps= false;
     protected $fillable = array (
             'apid',
             'aid',
