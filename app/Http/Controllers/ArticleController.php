@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Article;
 use App\ArticleProfile;
 use \Illuminate\Support\Facades\Request;
+use App\Http\Requests\StoreArticleRequest;
 class ArticleController extends Controller
 {
     /**
@@ -48,11 +49,11 @@ class ArticleController extends Controller
      * @author zhaoguanglai
      * Date: 2017年4月7日
      */
-    public function store(){
+    public function store(StoreArticleRequest $request){
         //初始化变量
-        $nowTime = time();
+        $nowTime = strtotime($request->get("published_at"));
         $article = new Article();
-        $article->atitle = trim(Request::get('title'));
+        $article->atitle = $request->get('title');
         $article->type = 1;
         $article->status = 2;
         $article->create_uid = $article->modify_uid =  14827;
@@ -61,7 +62,7 @@ class ArticleController extends Controller
         $article->save();
         if($article->aid){
             $articleProData['aid'] = $article->aid;
-            $articleProData['acontent'] = Request::get('content');
+            $articleProData['acontent'] = $request->get('content');
             $articleProData['create_ip'] = bindec(decbin(ip2long(Request::getClientIp())));
             ArticleProfile::insert($articleProData);
         }
