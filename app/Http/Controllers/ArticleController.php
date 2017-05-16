@@ -6,6 +6,8 @@ use App\Article;
 use App\ArticleProfile;
 use \Illuminate\Support\Facades\Request;
 use App\Http\Requests\StoreArticleRequest;
+use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Redis;
 class ArticleController extends Controller
 {
     /**
@@ -29,11 +31,22 @@ class ArticleController extends Controller
      * @param int $id
      */
     public function show($id){
-        $article = Article::findOrFail($id);
-        if(is_null($article)){
-            abort(404);
+        //初始化变量
+        $cacheKey = "laravel_article_".$id;
+        $article = Redis::get($cacheKey);
+        if(!$article){
+            $article = Article::findOrFail($id);
+            if(is_null($article)){
+                abort(404);
+            }
+            $article->content = ArticleProfile::where('aid',$id)->value("acontent");
+            //设置缓存
+            $cacheExtime = 86000;
+            $redis = Redis::set($cacheKey, serialize($article), $cacheExtime);
+        }else{
+            $article = unserialize($article);
         }
-        $article->content = ArticleProfile::where('aid',$id)->value("acontent");
+        
         return view('articles.show', compact('article'));
     }
     /**

@@ -27,6 +27,7 @@ Auth::routes();
 Route::get('/home', 'HomeController@index');
 //文章相关路由
 Route::get('/article', 'ArticleController@index');
-Route::get('/article/show/{id}', 'ArticleController@show');
+Route::get('/article/show/{id}', 'ArticleController@show')
+->where('id','[0-9]+');
 Route::get('/article/create', 'ArticleController@create');
 Route::post('/article/store', 'ArticleController@store');
