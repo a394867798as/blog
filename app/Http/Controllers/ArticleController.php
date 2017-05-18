@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Article;
 use App\ArticleProfile;
-use \Illuminate\Support\Facades\Request;
+use \Illuminate\Http\Request;
 use App\Http\Requests\StoreArticleRequest;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Redis;
@@ -16,7 +16,8 @@ class ArticleController extends Controller
      * Date: 2017年3月24日
      * @return \Illuminate\View\View|\Illuminate\Contracts\View\Factory
      */
-    public function index(){
+    public function index(Request $request){
+        var_dump($request->session()->get('key'));
         $articles = Article::orderBy('aid','DESC')->paginate(15)->toArray();
         foreach ($articles['data'] as $k=>$v){
             $articleProfile = ArticleProfile::where('aid','=',$v['aid'])->value("acontent");
@@ -76,7 +77,7 @@ class ArticleController extends Controller
         if($article->aid){
             $articleProData['aid'] = $article->aid;
             $articleProData['acontent'] = $request->get('content');
-            $articleProData['create_ip'] = bindec(decbin(ip2long(Request::getClientIp())));
+            $articleProData['create_ip'] = ip2long($request->getClientIp());
             ArticleProfile::insert($articleProData);
         }
         return redirect('/article');
