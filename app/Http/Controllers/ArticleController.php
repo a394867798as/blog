@@ -17,7 +17,6 @@ class ArticleController extends Controller
      * @return \Illuminate\View\View|\Illuminate\Contracts\View\Factory
      */
     public function index(Request $request){
-        var_dump($request->session()->get('key'));
         $articles = Article::orderBy('aid','DESC')->paginate(15)->toArray();
         foreach ($articles['data'] as $k=>$v){
             $articleProfile = ArticleProfile::where('aid','=',$v['aid'])->value("acontent");
@@ -43,7 +42,7 @@ class ArticleController extends Controller
             $article->content = ArticleProfile::where('aid',$id)->value("acontent");
             //设置缓存
             $cacheExtime = 86000;
-            $redis = Redis::set($cacheKey, serialize($article), $cacheExtime);
+            Redis::set($cacheKey, serialize($article), $cacheExtime);
         }else{
             $article = unserialize($article);
         }

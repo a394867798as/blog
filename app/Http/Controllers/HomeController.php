@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 
+
+
 class HomeController extends Controller
 {
     /**
@@ -20,7 +22,7 @@ class HomeController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(\Illuminate\Http\Request $request)
     {
         return view('home');
     }
