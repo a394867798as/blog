@@ -1,4 +1,5 @@
 @extends('app')
+@section('title',$title)
 @section('content')
     <article class="format-image group">
         <h2 class="post-title pad">

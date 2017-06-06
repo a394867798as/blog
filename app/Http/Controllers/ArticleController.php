@@ -6,7 +6,6 @@ use App\Article;
 use App\ArticleProfile;
 use \Illuminate\Http\Request;
 use App\Http\Requests\StoreArticleRequest;
-use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Redis;
 class ArticleController extends Controller
 {
@@ -16,11 +15,11 @@ class ArticleController extends Controller
      * Date: 2017年3月24日
      * @return \Illuminate\View\View|\Illuminate\Contracts\View\Factory
      */
-    public function index(Request $request){
-        $articles = Article::orderBy('aid','DESC')->paginate(15)->toArray();
-        foreach ($articles['data'] as $k=>$v){
-            $articleProfile = ArticleProfile::where('aid','=',$v['aid'])->value("acontent");
-            $articles['data'][$k]['content'] = stripslashes($articleProfile);
+    public function index(){
+        $articles = Article::orderBy('aid','DESC')->paginate(15);
+        foreach ($articles as $v){
+            $articleProfile = ArticleProfile::where('aid','=',$v->aid)->value("acontent");
+            $v->content = stripslashes($articleProfile);
         }
         return view('articles.index', compact('articles'));
     }
@@ -46,8 +45,8 @@ class ArticleController extends Controller
         }else{
             $article = unserialize($article);
         }
-        
-        return view('articles.show', compact('article'));
+        $title = $article->atitle;
+        return view('articles.show', compact('article','title'));
     }
     /**
      * 创建文章
