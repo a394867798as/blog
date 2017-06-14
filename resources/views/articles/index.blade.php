@@ -24,4 +24,6 @@
     </article>
     @endforeach
     {{ $articles->links() }}
+    <script type="text/javascript">
+    </script>
 @endsection

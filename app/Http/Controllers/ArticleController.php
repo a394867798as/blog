@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Article;
 use App\ArticleProfile;
+use App\Events\SomeEvent;
 use \Illuminate\Http\Request;
 use App\Http\Requests\StoreArticleRequest;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redis;
 class ArticleController extends Controller
 {
@@ -29,7 +31,7 @@ class ArticleController extends Controller
      * Date: 2017年3月24日
      * @param int $id
      */
-    public function show($id){
+    public function show(Request $request,$id){
         //初始化变量
         $cacheKey = "laravel_article_".$id;
         $article = Redis::get($cacheKey);
@@ -45,6 +47,8 @@ class ArticleController extends Controller
         }else{
             $article = unserialize($article);
         }
+        //加入事件监听
+        event(new SomeEvent($article));
         $title = $article->atitle;
         return view('articles.show', compact('article','title'));
     }
@@ -79,5 +83,13 @@ class ArticleController extends Controller
             ArticleProfile::insert($articleProData);
         }
         return redirect('/article');
+    }
+
+    public function test(){
+        $article = Article::limit(10)->get();
+//        foreach ($article as $v){
+//            echo $v->atitle."<br/>";
+//        }
+        echo $article->max('aid');
     }
 }

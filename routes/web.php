@@ -31,3 +31,5 @@ Route::get('/article/show/{id}', 'ArticleController@show')
 ->where('id','[0-9]+');
 Route::get('/article/create', 'ArticleController@create');
 Route::post('/article/store', 'ArticleController@store');
+//测试路由
+Route::get('/article/test', 'ArticleController@test');

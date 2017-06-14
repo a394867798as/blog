@@ -15,9 +15,6 @@ require('./bootstrap');
 
 Vue.component('example', require('./components/Example.vue'));
 
-const app = new Vue({
-    el: '#app'
-});
 Vue.component(
     'passport-clients',
     require('./components/passport/Clients.vue')

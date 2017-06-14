@@ -9,6 +9,11 @@ class Article extends Model
     //表名
     protected $table = "article";
     protected $primaryKey = "aid";
+    /**
+     * 该模型是否被自动维护时间戳
+     *
+     * @var bool
+     */
     public $timestamps = false;
     /**
      * The attributes that are mass assignable.
