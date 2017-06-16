@@ -21,7 +21,9 @@ Route::get('/nowTime',function(){
 Route::get('user/{name}', function ($name) {
     return 'Hello '.$name;
 });
-
+Route::get('/logout',function(){
+  return redirect('/');
+});
 Auth::routes();
 
 Route::get('/home', 'HomeController@index');

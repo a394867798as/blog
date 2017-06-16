@@ -1,7 +1,7 @@
-@extends('app')
-@section('title',$title)
+@extends('layouts.app')
 @section('content')
-    <article class="format-image group">
+    <link href="{{ asset('css/all.css') }}" rel="stylesheet">
+    <article class="format-image group container">
         <h2 class="post-title pad">
             <a href="/article/show/{{ $article->aid }}" rel="bookmark"> {{ $article->atitle }}</a>
         </h2>

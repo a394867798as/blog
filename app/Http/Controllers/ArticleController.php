@@ -5,10 +5,9 @@ namespace App\Http\Controllers;
 use App\Article;
 use App\ArticleProfile;
 use App\Events\SomeEvent;
+use App\Model\ArticleModel;
 use \Illuminate\Http\Request;
 use App\Http\Requests\StoreArticleRequest;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Redis;
 class ArticleController extends Controller
 {
     /**
@@ -18,11 +17,8 @@ class ArticleController extends Controller
      * @return \Illuminate\View\View|\Illuminate\Contracts\View\Factory
      */
     public function index(){
-        $articles = Article::orderBy('aid','DESC')->paginate(15);
-        foreach ($articles as $v){
-            $articleProfile = ArticleProfile::where('aid','=',$v->aid)->value("acontent");
-            $v->content = stripslashes($articleProfile);
-        }
+        $articles = ArticleModel::getArticleList(15);
+
         return view('articles.index', compact('articles'));
     }
     /**
@@ -32,25 +28,12 @@ class ArticleController extends Controller
      * @param int $id
      */
     public function show(Request $request,$id){
-        //初始化变量
-        $cacheKey = "laravel_article_".$id;
-        $article = Redis::get($cacheKey);
-        if(!$article){
-            $article = Article::findOrFail($id);
-            if(is_null($article)){
-                abort(404);
-            }
-            $article->content = ArticleProfile::where('aid',$id)->value("acontent");
-            //设置缓存
-            $cacheExtime = 86000;
-            Redis::set($cacheKey, serialize($article), $cacheExtime);
-        }else{
-            $article = unserialize($article);
-        }
+        //获取详情
+        $article = ArticleModel::getOneArticleByAid($id);
         //加入事件监听
         event(new SomeEvent($article));
-        $title = $article->atitle;
-        return view('articles.show', compact('article','title'));
+        config('app.name', $article->atitle) ;
+        return view('articles.show', compact('article'));
     }
     /**
      * 创建文章

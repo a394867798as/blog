@@ -9,16 +9,16 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <title>{{ config('app.name', 'Laravel') }}</title>
-
-    <!-- Styles -->
-    <link href="{{ asset('css/app.css') }}" rel="stylesheet">
-
     <!-- Scripts -->
     <script>
         window.Laravel = {!! json_encode([
             'csrfToken' => csrf_token(),
         ]) !!};
     </script>
+    <!-- Styles -->
+    <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    <script type='text/javascript' src="{{asset('js/app.js')}}"></script>
+    <script type='text/javascript' src="{{asset('js/all.js')}}"></script>
 </head>
 <body>
     <div id="app">
@@ -43,7 +43,8 @@
                 <div class="collapse navbar-collapse" id="app-navbar-collapse">
                     <!-- Left Side Of Navbar -->
                     <ul class="nav navbar-nav">
-                        &nbsp;
+                        <li><a>首页</a></li>
+                        <li><a href="/article">文章</a></li>
                     </ul>
 
                     <!-- Right Side Of Navbar -->
