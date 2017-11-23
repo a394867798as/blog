@@ -1,7 +1,7 @@
-@extends('app')
+@extends('layouts.app')
 @section('content')
 	<h1>撰写新的文章</h1>
-	{!! Form::open(['url'=>'article/store']) !!}
+	{!! Form::open(['url'=>'article/store', 'id'=>'createArticle']) !!}
 		<div class="form-group">
 			{!! Form::label('title', '标题')!!}
 			{!! Form::text('title',null,['class'=>'form-control'])!!}
@@ -15,7 +15,9 @@
             {!! Form::input('date','published_at',date('Y-m-d'),['class'=>'form-control']) !!}
         </div>
 		<div class="form-group">
-			{!! Form::submit('发表文章', ['class'=>'btn btn-success form-control','onclick'=>'return submitForm();'])!!}
+			{!! Form::submit('发表文章', ['class'=>'btn btn-success form-control',
+			 'onclick'=>'return submitForm(this);',
+			 'data-toggle'=>"modal", 'data-target'=>".bs-example-modal-sm"])!!}
 		</div>
 	{!! Form::close() !!}
 	@if($errors->any())
@@ -24,13 +26,17 @@
                 <li>{{ $error }}</li>
             @endforeach
         </ul>
+        @else()
+        <ul class="alert alert-danger" style="display: none;">
+        </ul>
 	@endif
 <script type="text/javascript">
-function submitForm(){
+function submitForm(ev){
+    $(".alert").hide().html("");
     var title = $("#title").val();
     var content = $("#content").val();
     var published_at = $("#published_at").val();
-    var url = $("form").attr("action");
+    var url = $("#createArticle").attr("action");
     var data = {};
     data.title = title;
     data.content = content;
@@ -46,14 +52,15 @@ function submitForm(){
         async:true,
         statusCode:{
             422:function(json,message){
-                console.log(json.responseJSON);
+                $(".alert").show();
                 for(key in json.responseJSON){
-                    console.log(key+":"+json.responseJSON[key]);
+                    $(".alert").append("<li>"+key+":"+json.responseJSON[key]+"</li>");
                 }
+                return false;
             }
         },
-        done:function(json){
-            console.log(json);
+        success:function(json){
+            window.location.href = json.url;
         }
     });
     return false;

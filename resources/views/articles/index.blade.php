@@ -6,7 +6,7 @@
         @foreach($articles as $article)
         <article class="format-image group">
             <h2 class="post-title pad">
-                <a href="/article/show/{{ $article->aid}}">{{ $article->atitle }}</a>
+                <a href="{{route('showArticle',['id'=>$article->aid])}}">{{ $article->atitle }}</a>
             </h2>
             <div class="post-inner">
                 <div class="post-deco">
