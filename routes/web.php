@@ -28,10 +28,11 @@ Auth::routes();
 
 Route::get('/home', 'HomeController@index');
 //文章相关路由
-Route::get('/article', 'ArticleController@index');
+Route::get('/article', 'ArticleController@index')->name('articleIndex');
 Route::get('/article/show/{id}', 'ArticleController@show')
-->where('id','[0-9]+');
-Route::get('/article/create', 'ArticleController@create');
+->where('id','[0-9]+')->name('showArticle');
+Route::get('/article/create', 'ArticleController@create')
+->middleware('auth');
 Route::post('/article/store', 'ArticleController@store');
 //测试路由
 Route::get('/article/test', 'ArticleController@test');

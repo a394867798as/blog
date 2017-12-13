@@ -10,6 +10,7 @@ namespace App\Model;
 use App\Article;
 use App\ArticleProfile;
 use Illuminate\Support\Facades\Redis;
+use Mockery\Exception;
 
 class ArticleModel extends Article{
 
@@ -18,8 +19,10 @@ class ArticleModel extends Article{
      * @param int $limit
      *
      * @return mixed
+     * @throws \InvalidArgumentException
      */
-      public static function getArticleList($limit = 10){
+      public static function getArticleList($limit = 10) {
+
           $articles = Article::orderBy('aid','DESC')->paginate($limit);
           foreach ($articles as $v){
               $article = static::getOneArticleByAid($v->aid);
@@ -35,17 +38,18 @@ class ArticleModel extends Article{
      * @param $aid
      *
      * @return array
+     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      */
       public static function getOneArticleByAid($aid){
           //初始化变量
-          $cacheKey = "laravel_article_".$aid;
+          $cacheKey = 'laravel_article_'.$aid;
           $article = Redis::get($cacheKey);
           if(!$article){
               $article = Article::findOrFail($aid);
               if(is_null($article)){
                   abort(404);
               }
-              $article->content = ArticleProfile::where('aid',$aid)->value("acontent");
+              $article->content = ArticleProfile::where('aid',$aid)->value('acontent');
               //设置缓存
               $cacheExpiration  = 86000;
               Redis::set($cacheKey, serialize($article), $cacheExpiration);

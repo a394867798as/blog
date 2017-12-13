@@ -7,7 +7,10 @@ use App\ArticleProfile;
 use App\Events\SomeEvent;
 use App\Model\ArticleModel;
 use \Illuminate\Http\Request;
+use App\Mail\article as mailArticle;
 use App\Http\Requests\StoreArticleRequest;
+use Illuminate\Support\Facades\Mail;
+
 class ArticleController extends Controller
 {
     /**
@@ -26,6 +29,7 @@ class ArticleController extends Controller
      * @author zhaoguanglai
      * Date: 2017年3月24日
      * @param int $id
+     * @return string
      */
     public function show(Request $request,$id){
         //获取详情
@@ -51,7 +55,7 @@ class ArticleController extends Controller
     public function store(StoreArticleRequest $request){
         //初始化变量
         $nowTime = strtotime($request->get("published_at"));
-        $article = new Article();
+        $article = new ArticleModel();
         $article->atitle = $request->get('title');
         $article->type = 1;
         $article->status = 2;
@@ -61,11 +65,13 @@ class ArticleController extends Controller
         $article->save();
         if($article->aid){
             $articleProData['aid'] = $article->aid;
-            $articleProData['acontent'] = $request->get('content');
+            $articleProData['acontent'] = addslashes(htmlspecialchars($request->get('content')));
             $articleProData['create_ip'] = ip2long($request->getClientIp());
             ArticleProfile::insert($articleProData);
+            //发送邮件
+            Mail::to($request->user())->send(new mailArticle($article));
         }
-        return redirect('/article');
+        die(\GuzzleHttp\json_encode(['url'=>route('articleIndex')]));
     }
 
     public function test(){

@@ -18,8 +18,8 @@ class RedirectIfAuthenticated
     public function handle($request, Closure $next, $guard = null)
     {
         if (Auth::guard($guard)->check()) {
-            $refererUrl = $request->server('HTTP_REFERER');
-            $redirectUrl = $refererUrl?$refererUrl:'/home';
+                $refererUrl = $request->server('HTTP_REFERER');
+                $redirectUrl = $refererUrl?$refererUrl:'/home';
             return redirect($redirectUrl);
         }
         return $next($request);
